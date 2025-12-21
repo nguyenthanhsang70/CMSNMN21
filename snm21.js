@@ -8,7 +8,7 @@ function checkValid() {
     }
 
     // Chỉ chấp nhận duy nhất một mật khẩu: 22/12/2006
-    if (inputValue === "22/12/2006") {
+    if (inputValue === "02/01/2010") {
         
         // Đóng modal
         $('#modalHoiNgaySinh').modal('hide');
@@ -42,5 +42,6 @@ function checkValid() {
         alert("Mật khẩu không chính xác!");
     }
 }
+
 
 
