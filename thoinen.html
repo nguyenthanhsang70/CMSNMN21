@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thổi Nến Sinh Nhật</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 50% 30%, #2b3248, #1a1f2e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Dancing Script', cursive;
+            perspective: 1000px;
+        }
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, #000 90%);
+            pointer-events: none; z-index: 50;
+        }
+        .ambient-light {
+            position: absolute;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(255,147,41,0.15) 0%, transparent 60%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: opacity 0.2s;
+            mix-blend-mode: screen;
+        }
+
+        /* Bánh kem giữ nguyên đẹp */
+        .cake-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            margin-bottom: 80px;
+            transform-style: preserve-3d;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+        .plate {position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:360px;height:100px;background:radial-gradient(ellipse at center,#f5f5f5 0%,#dcdcdc 50%,#999 100%);border-radius:50%;box-shadow:0 15px 15px rgba(0,0,0,0.4),inset 0 -5px 10px rgba(0,0,0,0.1);z-index:1;}
+        .layer {position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;}
+        .layer-body {background:linear-gradient(90deg,rgba(255,230,230,1) 0%,rgba(255,255,255,1) 25%,rgba(255,240,245,1) 50%,rgba(240,200,210,1) 85%,rgba(200,150,160,1) 100%);border-radius:5px 5px 50% 50%/5px 5px 15px 15px;box-shadow:inset 0 -10px 20px rgba(0,0,0,0.05);}
+        .layer-top {background:radial-gradient(ellipse at 40% 40%,#fff 0%,#ffe6e6 100%);border-radius:50%;box-shadow:inset 0 -2px 5px rgba(0,0,0,0.05);}
+        .tier-1{bottom:20px;width:300px;height:100px;z-index:2;}
+        .tier-1 .layer-top{top:-25px;width:300px;height:50px;z-index:3;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0.2) 0%,transparent 60%),radial-gradient(ellipse at 40% 40%,#fff 0%,#ffe6e6 100%);}
+        .tier-2{bottom:100px;width:220px;height:90px;z-index:4;background:linear-gradient(90deg,#ffeebb 0%,#fff9e6 25%,#fff 50%,#ffeebb 85%,#d4c085 100%);}
+        .tier-2 .layer-top{top:-20px;width:220px;height:40px;z-index:5;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0.15) 0%,transparent 60%),radial-gradient(ellipse at 40% 40%,#fff 0%,#ffeebb 100%);}
+        .tier-3{bottom:170px;width:150px;height:80px;z-index:6;background:linear-gradient(90deg,#cceeff 0%,#e6f7ff 25%,#fff 50%,#cceeff 85%,#88bbcc 100%);}
+        .tier-3 .layer-top{top:-15px;width:150px;height:30px;background:radial-gradient(ellipse at 40% 40%,#f0fbff 0%,#cceeff 100%);z-index:7;}
+
+        /* Nến + lửa */
+        .candle-wrapper {position:absolute;bottom:245px;left:50%;transform:translateX(-50%);z-index:20;perspective:500px;}
+        .candle-stick {position:relative;width:20px;height:80px;background:linear-gradient(90deg,#cfd8dc 0%,#fff 40%,#b0bec5 100%);border-radius:3px;box-shadow:0 0 5px rgba(0,0,0,0.3);}
+        .candle-stick::before {content:'';position:absolute;top:0;left:0;width:100%;height:15px;background:radial-gradient(circle at top,rgba(255,235,59,0.9),transparent);border-radius:3px 3px 0 0;opacity:0.8;filter:blur(2px);animation:wax-glow .1s infinite alternate;}
+        .wick {position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:2px;height:12px;background:#222;border-radius:2px;}
+        .wick::after {content:'';position:absolute;top:0;left:-1px;width:4px;height:4px;background:#ff5722;border-radius:50%;box-shadow:0 0 5px #ff5722;opacity:0.9;}
+        .flame-container {position:absolute;bottom:100%;left:50%;width:40px;height:60px;transform:translateX(-50%);transform-origin:center bottom;filter:blur(.5px);}
+        .flame-base-blue {position:absolute;bottom:0;left:50%;width:14px;height:20px;transform:translateX(-50%);background:rgba(0,100,255,0.6);border-radius:50%;filter:blur(4px);opacity:.8;z-index:10;}
+        .flame-body {position:absolute;bottom:5px;left:50%;width:16px;height:45px;transform:translateX(-50%);background:linear-gradient(to top,rgba(255,150,0,.5),rgba(255,200,0,.8));border-radius:50% 50% 20% 20%;box-shadow:0 0 10px rgba(255,100,0,.6);animation:flicker-shape .1s infinite alternate;z-index:9;}
+        .flame-core {position:absolute;bottom:5px;left:50%;width:8px;height:25px;transform:translateX(-50%);background:#fff;border-radius:50% 50% 30% 30%;box-shadow:0 0 15px #fff;opacity:.9;z-index:11;animation:flicker-core .15s infinite alternate-reverse;}
+        .flame-aura {position:absolute;bottom:-10px;left:50%;width:80px;height:80px;transform:translateX(-50%);background:radial-gradient(circle,rgba(255,100,0,.2) 0%,transparent 70%);border-radius:50%;z-index:1;}
+        @keyframes flicker-shape {0%{transform:translateX(-50%) scale(1) skewX(0deg);height:45px}100%{transform:translateX(-50%) scale(1.03) skewX(1deg);height:47px}}
+        @keyframes flicker-core {0%{opacity:.9;height:25px}100%{opacity:1;height:27px}}
+        @keyframes wax-glow {0%{opacity:.6}100%{opacity:.9}}
+        .smoke-particle {position:absolute;background:radial-gradient(circle,rgba(200,200,200,.5),transparent);border-radius:50%;filter:blur(5px);z-index:30;pointer-events:none;}
+        @keyframes smoke-rise {0%{opacity:.5;transform:translate(-50%,0) scale(.5)}100%{opacity:0;transform:translate(var(--dx),-100px) scale(3)}}
+
+        .confetti {position:absolute;width:8px;height:8px;background:#fff;opacity:0.8;pointer-events:none;}
+
+        /* NÚT ĐÃ ĐƯỢC FIX 100% TRÊN ĐIỆN THOẠI */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 100;
+        }
+        button {
+            background: linear-gradient(45deg, #ff6f00, #ffca28);
+            border: none;
+            padding: 16px 20px;
+            width: 100%;
+            color: #000;
+            font-weight: 800;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 111, 0, 0.5);
+            transition: all .3s;
+            white-space: nowrap;
+        }
+        button:hover {transform: translateY(-3px) scale(1.03);}
+        button:disabled {background:#555;color:#aaa;box-shadow:none;cursor:not-allowed;}
+        #status {
+            margin-top: 12px;
+            font-size: 16px;
+            color: #ff9ff3;
+            font-style: italic;
+        }
+
+        /* Đếm ngược nhỏ gọn */
+        .countdown-overlay {
+            position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+            display:none;flex-direction:column;justify-content:center;align-items:center;z-index:999;color:#fff;
+        }
+        .countdown-number {font-size:120px;font-weight:200;letter-spacing:-5px;text-shadow:0 0 30px rgba(255,255,255,0.4);margin-bottom:20px;}
+        .countdown-text {font-size:24px;color:#ff8fa3;font-weight:500;}
+        .countdown-text::after {content:"❤️";animation:heartbeat 1.5s infinite;}
+        @keyframes heartbeat {0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+    <div class="ambient-light" id="ambientLight"></div>
+
+    <div class="cake-container">
+        <div class="plate"></div>
+        <div class="layer layer-body tier-1"><div class="layer layer-top"></div></div>
+        <div class="layer layer-body tier-2"><div class="layer layer-top"></div></div>
+        <div class="layer layer-body tier-3"><div class="layer layer-top"></div></div>
+
+        <div class="candle-wrapper">
+            <div class="candle-stick">
+                <div class="wick"></div>
+                <div class="flame-container" id="realFlame">
+                    <div class="flame-aura"></div>
+                    <div class="flame-base-blue"></div>
+                    <div class="flame-body"></div>
+                    <div class="flame-core"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút đã được fix hoàn hảo trên mọi điện thoại -->
+    <div class="controls">
+        <button id="startBtn">BẬT MIC ĐỂ THỔI</button>
+        <div id="status">Hãy bật mic và thổi thật mạnh nhé!</div>
+    </div>
+
+    <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-number" id="countdownNumber">10</div>
+        <div class="countdown-text">Chuẩn bị đón điều bất ngờ nào...</div>
+    </div>
+
+    <script>
+        const LINK_CHUYEN_HUONG = "happy.html";
+        const BLOW_THRESHOLD = 0.09;
+
+        const startBtn = document.getElementById('startBtn');
+        const statusText = document.getElementById('status');
+        const flameContainer = document.getElementById('realFlame');
+        const ambientLight = document.getElementById('ambientLight');
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownNumber = document.getElementById('countdownNumber');
+
+        let audioContext, analyser, microphone, dataArray;
+        let isBlowOut = false;
+        let flickerInterval;
+
+        function startAmbientFlicker() {
+            flickerInterval = setInterval(() => {
+                if (isBlowOut) return;
+                const o = 0.7 + Math.random() * 0.3;
+                const s = 0.98 + Math.random() * 0.04;
+                ambientLight.style.opacity = o * 0.2;
+                ambientLight.style.transform = `translate(-50%,-50%) scale(${s})`;
+            }, 50);
+        }
+
+        async function initMic() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 512;
+                analyser.smoothingTimeConstant = 0.4;
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                startBtn.innerHTML = "Đang nghe... Thổi đi nào!";
+                startBtn.disabled = true;
+                statusText.innerText = "Thổi mạnh vào mic để tắt nến nha!";
+                startAmbientFlicker();
+                detectBlow();
+            } catch (e) {
+                statusText.innerText = "Không bật được mic. Hãy thử trên Chrome/Firefox!";
+            }
+        }
+
+        function detectBlow() {
+            if (isBlowOut) return;
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < 20; i++) sum += dataArray[i];
+            const vol = sum / 20 / 255;
+            updateFlamePhysics(vol);
+            if (vol > BLOW_THRESHOLD) extinguishFlame();
+            else requestAnimationFrame(detectBlow);
+        }
+
+        function updateFlamePhysics(v) {
+            const lean = Math.random() > 0.5 ? v * 60 : v * -60;
+            const scaleY = 1 - v;
+            const op = 1 - v * 0.5;
+            flameContainer.style.transform = `translateX(-50%) skewX(${lean}deg) scaleY(${scaleY})`;
+            flameContainer.style.opacity = op;
+            ambientLight.style.opacity = (1 - v) * 0.3;
+        }
+
+        function extinguishFlame() {
+            isBlowOut = true;
+            clearInterval(flickerInterval);
+            flameContainer.style.transition = "all .4s ease";
+            flameContainer.style.opacity = 0;
+            flameContainer.style.transform = "translateX(-50%) scale(0)";
+            ambientLight.style.opacity = 0;
+
+            const style = document.createElement('style');
+            style.innerHTML = ".candle-stick::before{opacity:0 !important}";
+            document.head.appendChild(style);
+
+            spawnSmoke();
+            if (microphone) microphone.disconnect();
+
+            setTimeout(() => {
+                countdownOverlay.style.display = "flex";
+                startCountdown();
+            }, 1500);
+        }
+
+        function spawnSmoke() {
+            const c = document.querySelector('.candle-wrapper');
+            for (let i = 0; i < 28; i++) {
+                const s = document.createElement('div');
+                s.className = 'smoke-particle';
+                const size = 10 + Math.random() * 25;
+                s.style.width = s.style.height = size + 'px';
+                s.style.top = '-10px';
+                s.style.left = '50%';
+                s.style.setProperty('--dx', (Math.random() - 0.5) * 150 + 'px');
+                s.style.animation = `smoke-rise ${2 + Math.random() * 1.2}s ease-out forwards`;
+                c.appendChild(s);
+                setTimeout(() => s.remove(), 4000);
+            }
+        }
+
+        function startCountdown() {
+            let sec = 10;
+            countdownNumber.textContent = sec;
+            const timer = setInterval(() => {
+                sec--;
+                countdownNumber.textContent = sec;
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    document.body.style.transition = "opacity 1.5s";
+                    document.body.style.opacity = 0;
+                    setTimeout(() => window.location.href = LINK_CHUYEN_HUONG, 1600);
+                }
+            }, 1000);
+        }
+
+        startBtn.onclick = initMic;
+        document.addEventListener('touchstart', () => {
+            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+        }, { once: true });
+
+        // Confetti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'];
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.top = '-10px';
+            c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 10 + 6;
+            c.style.width = c.style.height = size + 'px';
+            if (Math.random() > 0.5) c.style.borderRadius = '50%';
+            const duration = Math.random() * 3 + 2.5;
+            c.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out, opacity ${duration}s`;
+            document.body.appendChild(c);
+            setTimeout(() => {
+                c.style.top = '100vh';
+                c.style.transform = `rotate(${Math.random() * 720}deg) translateX(${Math.random() * 80 - 40}px)`;
+                c.style.opacity = '0';
+            }, 10);
+            setTimeout(() => c.remove(), duration * 1000 + 100);
+        }
+        setInterval(createConfetti, 90);
+    </script>
+</body>
+</html>
+
+
