@@ -21,9 +21,9 @@ function checkValid() {
         // ============================================
         // THAY ĐỔI NGÀY MỞ Ở ĐÂY:
         // ============================================
-        var allowedDay = 2;      // Ngày (1-31)
-        var allowedMonth = 1;    // Tháng (1-12)
-        var allowedYear = 2026;  // Năm
+        var allowedDay = 25;      // Ngày (1-31)
+        var allowedMonth = 12;    // Tháng (1-12)
+        var allowedYear = 2025;  // Năm
         // ============================================
         
         // Kiểm tra xem có đúng ngày không
@@ -81,3 +81,4 @@ function checkCurrentDate() {
     
     console.log("Ngày hiện tại: " + day + "/" + month + "/" + year);
 }
+
