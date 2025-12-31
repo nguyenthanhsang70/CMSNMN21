@@ -7,7 +7,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
-
         body {
             font-family: 'Dancing Script', cursive;
             background: #FDE3A7;
@@ -72,13 +71,6 @@
             transition: opacity 0.5s 0.7s;
         }
         .card.opened .details { opacity: 1; }
-        .title1 {
-            font-family: 'Amatic SC', cursive;
-            font-size: 14px;
-            color: #16A085;
-            margin: 0 0 4px 0;
-            line-height: 1;
-        }
         .title2 {
             font-family: 'Amatic SC', cursive;
             font-size: 14px;
@@ -104,7 +96,6 @@
             font-size: 20px;
             margin-right: 4px;
         }
-
         /* SLIDESHOW */
         .slideshow {
             position: absolute;
@@ -181,10 +172,6 @@
             width: 20px;
             border-radius: 5px;
         }
-
-        /* Hiệu ứng popup */
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-        @keyframes zoomIn { from {transform:scale(0.7); opacity:0;} to {transform:scale(1); opacity:1;} }
     </style>
 </head>
 <body>
@@ -193,24 +180,22 @@
             <div class="bark"></div>
             <img src="biathiep.jpg" alt="Bìa thiệp">
         </div>
-
         <div class="details" id="textContent">
             <h1 class="title2">CHÚC MỪNG SINH NHẬT!!</h1>
             <div class="content">
-    <p>Gửi Minh Nhật,</p>
-    <p>Hôm nay là một ngày rất đặc biệt,</p>
-    <p>nên mong mọi điều nhẹ nhàng nhất sẽ tìm đến với bạn.</p>
-    <p>Chúc nhật luôn khỏe mạnh, bình an và mỉm cười thật nhiều.</p>
-    <p>Tuổi mới mong có thêm những khoảnh khắc đẹp,</p>
-    <p>những điều đáng nhớ,</p>
-    <p>và những người thật lòng ở lại bên cạnh nhá.</p>
-</div>
+                <p>Gửi Minh Nhật,</p>
+                <p>Hôm nay là một ngày rất đặc biệt,</p>
+                <p>nên mong mọi điều nhẹ nhàng nhất sẽ tìm đến với bạn.</p>
+                <p>Chúc nhật luôn khỏe mạnh, bình an và mỉm cười thật nhiều.</p>
+                <p>Tuổi mới mong có thêm những khoảnh khắc đẹp,</p>
+                <p>những điều đáng nhớ,</p>
+                <p>và những người thật lòng ở lại bên cạnh nhá.</p>
+            </div>
             <div class="signature">
-                <div>Ngưởi gửi!</div>
+                <div>Người gửi!</div>
                 <div><span class="heart"></span>Nguyễn Thanh Sang (阮清尚)</div>
             </div>
         </div>
-
         <!-- SLIDESHOW -->
         <div class="slideshow" id="slideshow">
             <div class="slide active">
@@ -233,10 +218,8 @@
                 <img src="khoanhkhac5.jpg" alt="Ảnh 5">
                 <div class="slide-caption">Khoảnh khắc đáng nhớ 5</div>
             </div>
-
             <button class="nav-btn prev" onclick="changeSlide(-1)">❮</button>
             <button class="nav-btn next" onclick="changeSlide(1)">❯</button>
-
             <div class="dots">
                 <span class="dot active" onclick="currentSlide(0)"></span>
                 <span class="dot" onclick="currentSlide(1)"></span>
@@ -246,20 +229,17 @@
             </div>
         </div>
     </div>
-
     <script>
         let currentSlideIndex = 0;
         let autoSlideInterval;
-        let hasShownVideoPrompt = false;
-
-        const card        = document.getElementById('card');
+        const card = document.getElementById('card');
         const textContent = document.getElementById('textContent');
-        const slideshow   = document.getElementById('slideshow');
+        const slideshow = document.getElementById('slideshow');
 
-        // Tự động mở thiệp sau 1s
+        // Tự động mở thiệp sau 4 giây
         setTimeout(() => card.classList.add('opened'), 4000);
 
-        // Sau 10s chuyển sang slideshow
+        // Sau 20 giây chuyển sang slideshow
         setTimeout(() => {
             textContent.style.opacity = '0';
             setTimeout(() => {
@@ -268,94 +248,21 @@
             }, 500);
         }, 20000);
 
-        // === POPUP VIDEO SIÊU DỄ THƯƠNG ===
-        function createVideoPrompt() {
-            if (hasShownVideoPrompt) return;
-            hasShownVideoPrompt = true;
-
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position:fixed; top:0; left:0; width:100%; height:100%;
-                background:rgba(0,0,0,0.75); z-index:9999;
-                display:flex; align-items:center; justify-content:center;
-                animation:fadeIn 0.6s ease;
-            `;
-
-            const box = document.createElement('div');
-            box.style.cssText = `
-                background:#fff; padding:35px 25px; border-radius:25px;
-                max-width:340px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.4);
-                animation:zoomIn 0.7s ease;
-                font-family:'Dancing Script',cursive;
-            `;
-
-            box.innerHTML = `
-                <h2 style="margin:0 0 18px; font-size:32px; color:#E74C3C;">
-                    Minh Nhật Ơi
-                </h2>
-                <p style="margin:15px 0 25px; font-size:19px; color:#444; line-height:1.6;">
-                    Em có muốn xem video kỷ niệm<br>
-                    mà anh chuẩn bị riêng cho em không nào?
-                </p>
-                <button id="watchYes" style="
-                    padding:14px 40px; border:none; border-radius:50px;
-                    background:#E74C3C; color:white; font-size:20px; cursor:pointer;
-                    box-shadow:0 10px 30px rgba(231,76,60,0.5);
-                    transition:0.3s; font-family:'Dancing Script',cursive;
-                ">Có, em muốn xem lắm luôn!!! ❤️</button>
-            `;
-
-            overlay.appendChild(box);
-            document.body.appendChild(overlay);
-
-            // Nút xem video (anh thay link thật vào đây nha!)
-            document.getElementById('watchYes').onclick = () => {
-                window.location.href = "luotvideo.html";   // ← THAY LINK VIDEO THẬT CỦA ANH VÀO ĐÂY
-                // Ví dụ: "https://youtu.be/abc123"
-                // Hoặc: "video.html"
-            };
-
-            // Đóng popup
-            document.getElementById('closePrompt').onclick = () => {
-                overlay.style.animation = 'fadeIn 0.4s reverse';
-                setTimeout(() => overlay.remove(), 400);
-            };
-            overlay.onclick = (e) => {
-                if (e.target === overlay) {
-                    overlay.style.animation = 'fadeIn 0.4s reverse';
-                    setTimeout(() => overlay.remove(), 400);
-                }
-            };
-        }
-
-        // === SLIDESHOW ===
+        // SLIDESHOW FUNCTIONS
         function showSlide(index) {
             const slides = document.querySelectorAll('.slide');
-            const dots   = document.querySelectorAll('.dot');
-
-            if (index >= slides.length) {
-                currentSlideIndex = 0;
-                createVideoPrompt(); // Hiện popup khi hết 1 vòng
-            }
+            const dots = document.querySelectorAll('.dot');
+            if (index >= slides.length) currentSlideIndex = 0;
             if (index < 0) currentSlideIndex = slides.length - 1;
 
             slides.forEach(s => s.classList.remove('active'));
             dots.forEach(d => d.classList.remove('active'));
-
             slides[currentSlideIndex].classList.add('active');
             dots[currentSlideIndex].classList.add('active');
         }
 
         function changeSlide(direction) {
-            const totalSlides = document.querySelectorAll('.slide').length;
             currentSlideIndex += direction;
-
-            // Nếu đang ở ảnh cuối và bấm ➜ → hiện popup
-            if (currentSlideIndex >= totalSlides && direction > 0) {
-                createVideoPrompt();
-                currentSlideIndex = 0;
-            }
-
             showSlide(currentSlideIndex);
             resetAutoSlide();
         }
@@ -380,11 +287,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
