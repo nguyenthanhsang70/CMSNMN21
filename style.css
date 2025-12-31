@@ -1,5 +1,5 @@
 body {
-    background: url("kitty.jpg") no-repeat center center fixed;
+    background: url("nen.webp") no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -48,3 +48,4 @@ body {
         max-width: 500px; /* cố định kích thước tối đa */
     }
 }
+
