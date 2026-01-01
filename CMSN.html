@@ -193,7 +193,7 @@
             </div>
             <div class="signature">
                 <div>Người gửi!</div>
-                <div><span class="heart"></span>Nguyễn Thanh Sang (阮清尚)</div>
+                <div><span class="heart">❤️</span>Nguyễn Thanh Sang (阮清尚)</div>
             </div>
         </div>
         <!-- SLIDESHOW -->
@@ -232,9 +232,12 @@
     <script>
         let currentSlideIndex = 0;
         let autoSlideInterval;
+        let hasLooped = false; // Biến theo dõi đã hoàn thành 1 vòng chưa
         const card = document.getElementById('card');
         const textContent = document.getElementById('textContent');
         const slideshow = document.getElementById('slideshow');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
 
         // Tự động mở thiệp sau 4 giây
         setTimeout(() => card.classList.add('opened'), 4000);
@@ -250,10 +253,9 @@
 
         // SLIDESHOW FUNCTIONS
         function showSlide(index) {
-            const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
-            if (index >= slides.length) currentSlideIndex = 0;
-            if (index < 0) currentSlideIndex = slides.length - 1;
+            if (index >= totalSlides) currentSlideIndex = 0;
+            if (index < 0) currentSlideIndex = totalSlides - 1;
 
             slides.forEach(s => s.classList.remove('active'));
             dots.forEach(d => d.classList.remove('active'));
@@ -265,17 +267,28 @@
             currentSlideIndex += direction;
             showSlide(currentSlideIndex);
             resetAutoSlide();
+            hasLooped = false; // Reset nếu người dùng tương tác
         }
 
         function currentSlide(index) {
             currentSlideIndex = index;
             showSlide(currentSlideIndex);
             resetAutoSlide();
+            hasLooped = false;
         }
 
         function startAutoSlide() {
             autoSlideInterval = setInterval(() => {
                 currentSlideIndex++;
+                if (currentSlideIndex >= totalSlides) {
+                    currentSlideIndex = 0;
+                    if (!hasLooped) {
+                        hasLooped = true;
+                        clearInterval(autoSlideInterval);
+                        // === CHUYỂN TRANG TẠI ĐÂY ===
+                        window.location.href = 'ketthuc.html'; // <-- Thay bằng URL trang bạn muốn chuyển tới
+                    }
+                }
                 showSlide(currentSlideIndex);
             }, 3500);
         }
@@ -287,4 +300,3 @@
     </script>
 </body>
 </html>
-
