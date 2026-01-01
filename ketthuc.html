@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Đánh Giá Dịch Vụ</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    --bg1: #ff9a9e;
+    --bg2: #fad0c4;
+    --accent: #d63384;
+    --card-bg: rgba(255,255,255,0.28);
+    --text: #333;
+    --glass-border: rgba(255,255,255,0.5);
+    --star-empty: #ccc;
+    --star-filled: #ff9a9e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: 'Quicksand', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;overflow:hidden;color:var(--text);
+    position:relative;padding:20px;
+  }
+  .card{
+    width:100%;max-width:560px;border-radius:28px;
+    padding:40px 30px;background:var(--card-bg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border:1px solid var(--glass-border);
+    box-shadow: 0 14px 50px rgba(0,0,0,0.12);
+    position:relative;z-index:10;text-align:center;
+  }
+  .avatar-box{
+    width:120px;height:120px;border-radius:50%;padding:6px;margin:0 auto 24px;
+    background:rgba(255,255,255,0.5);overflow:hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  .avatar{
+    width:100%;height:100%;border-radius:50%;
+    background-image: url('avatarnts.jpg');
+    background-size:cover;background-position:center;
+  }
+  h1{
+    font-size:32px;color:var(--accent);margin-bottom:16px;
+  }
+  .desc{
+    font-size:18px;line-height:1.6;margin-bottom:30px;color:#444;
+  }
+  .rating{
+    margin:30px 0;
+  }
+  .stars{
+    display:flex;justify-content:center;gap:12px;margin-bottom:20px;
+  }
+  .star{
+    font-size:40px;color:var(--star-empty);cursor:pointer;transition:transform .2s, color .2s;
+  }
+  .star:hover{
+    transform:scale(1.15);
+  }
+  .star.filled{
+    color:var(--star-filled);
+  }
+  .rating-text{
+    font-size:16px;color:#555;margin-top:10px;display:none;
+  }
+  .thank-you{
+    font-size:20px;font-weight:600;color:var(--accent);margin:20px 0;display:none;
+  }
+  .btns{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:999px;font-weight:600;text-decoration:none;
+    background: linear-gradient(90deg,#ff9a9e,#fecfef);color:#fff;box-shadow:0 8px 24px rgba(255,154,158,0.22);
+    transition:transform .2s;
+  }
+  .btn:hover{
+    transform:translateY(-3px);
+  }
+  .author-info{ margin-top:40px;font-size:0.9rem;color:rgba(0,0,0,0.65); }
+  .author-name{ color:var(--accent);font-weight:700; }
+  @media(max-width:520px){
+    h1{ font-size:28px }
+    .avatar-box{ width:100px;height:100px }
+    .star{ font-size:36px }
+  }
+</style>
+</head>
+<body>
+  <div class="card" role="main">
+    <div class="avatar-box">
+      <div class="avatar"></div>
+    </div>
+    <h1>Đánh Giá Dịch Vụ Của Tôi</h1>
+    <div class="desc">
+      Cảm ơn bạn đã sử dụng dịch vụ của Nguyễn Thanh Sang.<br>
+      Bạn hài lòng đến mức nào? Hãy cho mình biết bằng cách chọn số sao nhé!
+    </div>
+
+    <div class="rating">
+      <div class="stars" id="stars">
+        <i class="fa-regular fa-star star" data-value="1"></i>
+        <i class="fa-regular fa-star star" data-value="2"></i>
+        <i class="fa-regular fa-star star" data-value="3"></i>
+        <i class="fa-regular fa-star star" data-value="4"></i>
+        <i class="fa-regular fa-star star" data-value="5"></i>
+      </div>
+      <div class="rating-text" id="ratingText">Chọn số sao để đánh giá</div>
+      <div class="thank-you" id="thankYou"></div>
+    </div>
+
+    <div class="btns">
+      <a href="profile.html" target="_blank" class="btn">
+        <i class="fa-solid fa-user"></i> Xem Profile
+      </a>
+    </div>
+
+    <div class="author-info">
+      <div class="author-name">Design by: @Nguyễn Thanh Sang (阮清尚)</div>
+      <div>设计由: @阮清尚</div>
+    </div>
+  </div>
+
+<script>
+  const stars = document.querySelectorAll('.star');
+  const ratingText = document.getElementById('ratingText');
+  const thankYou = document.getElementById('thankYou');
+  let selectedRating = 0;
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      selectedRating = star.getAttribute('data-value');
+      updateStars(selectedRating);
+      
+      ratingText.style.display = 'none';
+      thankYou.style.display = 'block';
+      thankYou.innerHTML = `Cảm ơn bạn đã đánh giá <strong>${selectedRating} sao</strong>! ❤️<br>
+                            Mình sẽ cố gắng hơn nữa để phục vụ tốt hơn!`;
+
+      // Có thể thêm lưu vào localStorage hoặc gửi về server ở đây nếu cần
+    });
+
+    star.addEventListener('mouseover', () => {
+      if (selectedRating === 0) {
+        const hoverValue = star.getAttribute('data-value');
+        updateStars(hoverValue, true);
+      }
+    });
+  });
+
+  document.getElementById('stars').addEventListener('mouseleave', () => {
+    if (selectedRating === 0) {
+      updateStars(0);
+    } else {
+      updateStars(selectedRating);
+    }
+  });
+
+  function updateStars(value, isHover = false) {
+    stars.forEach(star => {
+      const starValue = star.getAttribute('data-value');
+      if (starValue <= value) {
+        star.classList.remove('fa-regular');
+        star.classList.add('fa-solid');
+        star.classList.add('filled');
+      } else {
+        if (!isHover || selectedRating !== 0) {
+          star.classList.remove('fa-solid');
+          star.classList.add('fa-regular');
+          star.classList.remove('filled');
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>
